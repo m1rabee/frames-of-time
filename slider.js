@@ -1,6 +1,7 @@
 function setup() {
   createCanvas(windowWidth, windowHeight);
   slider = new Slider()
+  // slider's behaviors can be adjusted here
   slider.direction = "forward";
   slider.snapTo = slider.sliderMin;
   slider.weight = 0.25;
@@ -79,7 +80,7 @@ class Slider {
     if (this.isDragging){
       let targetX = mouseX;
       
-      // controls slider' direction (forward only, reverse only, or free)
+      // controls slider's direction (forward only, reverse only, or null)
       if (this.direction === "forward"){
         targetX = max(this.sliderX, mouseX);
       } else if (this.direction === "reverse") {
