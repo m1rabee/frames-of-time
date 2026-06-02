@@ -172,6 +172,7 @@ function displayAnimation(){
       frames[currentFrame].width 
       ){
     image(frames[currentFrame], 150,100,600,400);
+    }
 }
 
 // DISPLAYS ALL FRAMES IN ONE CANVAS
