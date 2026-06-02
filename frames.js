@@ -1,11 +1,12 @@
 // FRAMES AND SLIDER 
-let frames = []; // array containing frames that can be manipulated 
+let frames = []; // array containing frames
 let origFrames = []; // array containing chronological frames
 let slider; 
-let totalFrames = 12;
+let ui;
 
 // STORY 
 let story = [ // array containing progressing text
+  // PHASE 1 
   "Meet Fred, a lone horse recently separated from his family to follow his dreams.", // 0
   "His goal? To escape this loop he somehow found himself in.", // 1
   "Help him by adjusting the slider!", // 2
@@ -24,84 +25,49 @@ let story = [ // array containing progressing text
   "Distance, in this context, can mean many things.", // 15
   "Distance, physically, can allude to the space between the observer and the thing being observed.", // 16
   "Distance, psychologically, can allude to the cognitive biases distorting how we observe. Events become distorted, blurry, exaggerated, even sharpened. It all depends on how deeply we are affected by these cognitive biases.", // 17
-  ];
-let index = 0;
+  
+  // PHASE 2 
+  "This is what animation looks like in frames. Very similar to what time looks like in moments. If one looks closely, they would see that there are subtle changes in between frames.", // 18, display="gallery"
+  "When these frames are watched chronologically, one frame after the other, people assume motion and change that isn't there.", // 19
+  "Try skipping frames", // 20, snapTo=null, clickableTrack=true
+  "Try removing some frames", // 21
+  "Try shuffling the frames to see reality go crazy", // 22
 
-// BUTTONS
-let nextButton;
-let backButton;
-let input;
-let shuffleButton;
-let removeButton;
-let playButton;
-let pauseButton;
-let resetButton;
+  // PHASE 3 
+  "This is the start of Phase 3", // 23
+  "BLABLABLABLA", // 24
+
+  // PHASE 4 
+  "This is the start of Phase 4", // 25
+];
+let index = 0;
 let isPlaying = false;
-let animationButton;
-let galleryButton;
 let display = "animation";
 
 function preload() {
-    // LOAD ANIMATION FRAMES 
-    for (let i = 1; i <= totalFrames; i++) {
-      frames[i - 1] = loadImage(`assets/test-frames/frame-${String(i).padStart(2, "0")}.jpg`);
-    }
-        origFrames.push(frame);
+  // LOAD ANIMATION FRAMES 
+  for (let i = 1; i <= 12; i++) {
+    let path = `assets/frame-${String(i).padStart(2, "0")}.jpg`;
+
+    frames[i - 1] = loadImage(
+      path,
+    );
+  }
 }
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
     textSize(20);
-
-    console.log("frames loaded:", frames.length);
-  
-    nextButton = createButton('next'); 
-    nextButton.position(700,510);
-    nextButton.mousePressed(next);
+    origFrames = frames.slice(); // DISPLAYS ORIGINAL (CHRONOLOGICAL) FRAMES 
     
-    backButton = createButton('back');
-    backButton.position(165,510);
-    backButton.mousePressed(back);
-    
-    input = createInput('5', 'number'); // USER FPS INPUT (user can change the FPS manually through input)
-    input.position(420, 50);
-    input.size(45, 20);
-    
-    shuffleButton = createButton('shuffle');
-    shuffleButton.position(300,50);
-    shuffleButton.mousePressed(shuffleFrame);
-    
-    removeButton = createButton('remove');
-    removeButton.position(550,50);
-    removeButton.mousePressed(removeFrame);
-    
-    playButton = createButton('play');
-    playButton.position(470,510);
-    playButton.mousePressed(play);
-    
-    pauseButton = createButton('pause');
-    pauseButton.position(420,510);
-    pauseButton.mousePressed(pause);
-    
-    resetButton = createButton('reset');
-    resetButton.position(425,20);
-    resetButton.mousePressed(resetFrame);
-    
-    galleryButton = createButton('gallery');
-    galleryButton.position(800, 200);
-    galleryButton.mousePressed(() => display="gallery");
-    
-    animationButton = createButton('animation');
-    animationButton.position(800, 400);
-    animationButton.mousePressed(() => display="animation");
-    
+    ui = new UIButtons();
     slider = new Slider();
 }
 
 function draw() {
     background(255);
-  
-    // animation playback (play and pause)
+
+    // PLAY AND PAUSE THE ANIMATION USING BUTTONS AND NOT SLIDER
     if (isPlaying){
         slider.sliderX += 50 * slider.weight;
     
@@ -112,47 +78,97 @@ function draw() {
         }
     }
   
-  // animation and slider behavior changes depending on story progression 
+  // BEHAVIOR CHANGES DEPENDING ON PART OF STORY
     text(story[index], 100,700);
     
+    // PHASE 1 START
     if (index >= 0 && index <=1){
         slider.direction = "forward";
         slider.snapTo = slider.sliderMin;
-        slider.weight = 0.025;
+        slider.weight = 0.03;
         slider.clickableTrack = false;
+        ui.input.value("3");
     }
     
+    // SLOW 
     if (index >= 2 && index <= 3){
         slider.direction = "forward";
         slider.snapTo = slider.sliderMin;
         slider.weight = 0.01;
         slider.clickableTrack = false;
+        ui.input.value("1");
     }
     
+    // FAST
     if (index >= 4 && index <= 5){
         slider.direction = "forward";
         slider.snapTo = slider.sliderMin;
         slider.weight = 0.05;
         slider.clickableTrack = false;
+        ui.input.value("5");
     }  
     
+    // REVERSE
     if (index === 6){
         slider.direction = "reverse";
         slider.snapTo = slider.sliderMax;
-        slider.weight = 0.025;
+        slider.weight = 0.03;
         slider.clickableTrack = false;
+        ui.input.value("3");
     }    
 
-    if (index >= 7){
+    // ALL 
+    if (index >= 7 && index <= 17){
         slider.direction = "null";
-        slider.snapTo = slider.sliderMin;
-        slider.weight = Number(input.value())/100;
+        slider.snapTo = null;
+        slider.weight = Number(ui.input.value())/100;
         slider.clickableTrack = false;
-    }  
+    }
+
+    // PHASE 2 START - GALLERY DISPLAY 
+    if (index === 18){
+        slider.direction = slider.sliderMin;
+        slider.snapTo = slider.sliderMin;
+        slider.weight = Number(ui.input.value())/100;
+        slider.clickableTrack = false;
+        display="gallery";
+    }    
+
+    if (index === 19){
+        slider.direction = slider.sliderMin;
+        slider.snapTo = slider.sliderMin;
+        slider.weight = Number(ui.input.value())/100;
+        slider.clickableTrack = false;
+        display="animation";
+    }        
+
+    // ALLOW SKIP 
+    if (index >= 20 && index <= 21){
+        slider.direction = "null";
+        slider.snapTo = null;
+        slider.weight = Number(ui.input.value())/100;
+        slider.clickableTrack = true;
+    }    
+
+    // PHASE 3 START
+    if (index === 22){
+        slider.direction = "null";
+        slider.snapTo = null;
+        slider.weight = Number(ui.input.value())/100;
+        slider.clickableTrack = true;
+    }    
+
+    // PHASE 4 START
+    if (index === 24){
+        slider.direction = "null";
+        slider.snapTo = null;
+        slider.weight = Number(ui.input.value())/100;
+        slider.clickableTrack = true;
+    }
   
     slider.update();
 
-    // CHANGES DISPLAY 
+    // TYPES OF FRAMES DISPLAY 
     if (display === "animation") {
         displayAnimation();
     } else if (display === "gallery"){
@@ -164,18 +180,12 @@ function draw() {
 
 // DISPLAYS FRAME BY FRAME 
 function displayAnimation(){
-    // MAP SLIDER POSITION TO FRAME 
-    let currentFrame = constrain(floor(map(slider.sliderX, slider.sliderMin, slider.sliderMax, 0, frames.length -1)), 0, frames.length -1);
-    if (
-      frames.length > 0 &&
-      frames[currentFrame] &&
-      frames[currentFrame].width 
-      ){
-    image(frames[currentFrame], 150,100,600,400);
-    }
+  // MAP FRAME TO SLIDER VALUE
+  let currentFrame = floor(map(slider.sliderX, slider.sliderMin, slider.sliderMax, 0, frames.length - 1));
+  image(frames[currentFrame], 150, 100, 600, 400);
 }
 
-// DISPLAYS ALL FRAMES IN ONE CANVAS
+// DISPLAYS ALL FRAMES IN ONE WINDOW 
 function displayGallery(){
     let cols = 4;
     let imgW = 150;
@@ -205,17 +215,33 @@ function mouseReleased() {
     slider.mouseReleased();
 }
 
+function phase1(){
+  index = 0;
+}
+
+function phase2(){
+  index = 18;
+}
+
+function phase3(){
+  index = 23;
+}
+
+function phase4(){
+  index = 25;
+}
+
 // PROGRESSES FORWARD IN THE STORY
 function next(){
-    index++;
-    
-    if(index > story.length-1){
-    index = 0; 
-    }
-    }
+  index++;
 
-    // PROGRESSES BACKWARD IN THE STORY
-    function back(){
+  if (index > story.length - 1){
+    index = 0;
+  }
+}
+
+// PROGRESSES BACKWARD IN THE STORY
+function back(){
     index--;
     
     if(index < 0){
@@ -231,7 +257,7 @@ function shuffleFrame(){
         }
     }
 
-// REMOVES ONE RANDOM FRAME PER BUTTON PRESS
+// REMOVES FRAMES ONE BY ONE DEPENDING ON HOW MANY TIMES THE BUTTON IS PRESSED 
 function removeFrame(){
     if (frames.length > 1){
         const randomFrame = Math.floor(Math.random() * frames.length);
@@ -249,18 +275,18 @@ function pause(){
     isPlaying = false;
     }
 
-// RESETS THE ANIMATION AFTER SHUFFLE, REMOVE, PLAY
+// RESETS THE ANIMATION AFTER ANY INTERACTION 
 function resetFrame(){
     frames = [...origFrames];
     slider.sliderX = slider.snapTo;
-    }
+}
 
 // CONTROLS ALL SLIDER BEHAVIORS
 class Slider {
   constructor(
     value = 0,
     sliderX = 100,
-    sliderY = 800,
+    sliderY = 600,
     isDragging = false,
     weight = 0.05,
     sliderMin = 100,
@@ -279,7 +305,7 @@ class Slider {
     this.sliderMax = sliderMax;
     this.thumbSize = thumbSize;
     this.direction = direction;
-    this.snapTo = snapTo;
+    this.snapTo = snapTo ?? null;
     this.clickableTrack = clickableTrack;
   }
 
@@ -349,22 +375,71 @@ class Slider {
     // TRACK
     stroke(0);
     strokeWeight(4);
-
-    line(
-      this.sliderMin,
-      this.sliderY,
-      this.sliderMax,
-      this.sliderY
-    );
+    line(this.sliderMin, this.sliderY, this.sliderMax, this.sliderY);
 
     // THUMB
     fill(255);
-
-    ellipse(
-      this.sliderX,
-      this.sliderY,
-      this.thumbSize * 2
-    );
+    ellipse(this.sliderX, this.sliderY, this.thumbSize * 2);
   }
 }
 
+class UIButtons {
+    constructor(){
+        this.nextButton = createButton('next'); 
+        this.nextButton.position(770,770);
+        this.nextButton.mousePressed(next);
+        
+        this.backButton = createButton('back');
+        this.backButton.position(110,770);
+        this.backButton.mousePressed(back);
+        
+        this.input = createInput('5', 'number');
+        this.input.position(420, 50);
+        this.input.size(45, 20);
+        
+        this.shuffleButton = createButton('shuffle');
+        this.shuffleButton.position(300,50);
+        this.shuffleButton.mousePressed(shuffleFrame);
+        
+        this.removeButton = createButton('remove');
+        this.removeButton.position(550,50);
+        this.removeButton.mousePressed(removeFrame);
+        
+        this.playButton = createButton('play');
+        this.playButton.position(470,510);
+        this.playButton.mousePressed(play);
+        
+        this.pauseButton = createButton('pause');
+        this.pauseButton.position(420,510);
+        this.pauseButton.mousePressed(pause);
+        
+        this.resetButton = createButton('reset');
+        this.resetButton.position(425,20);
+        this.resetButton.mousePressed(resetFrame);
+        
+        this.galleryButton = createButton('gallery');
+        this.galleryButton.position(800, 260);
+        this.galleryButton.mousePressed(() => display="gallery");
+        
+        this.animationButton = createButton('animation');
+        this.animationButton.position(800, 310);
+        this.animationButton.mousePressed(() => display="animation"); 
+
+        this.phase1Button = createButton('1');
+        this.phase1Button.position(400,850);
+        this.phase1Button.mousePressed(phase1);
+
+        this.phase2Button = createButton('2');
+        this.phase2Button.position(430,850);
+        this.phase2Button.mousePressed(phase2);
+
+        this.phase3Button = createButton('3');
+        this.phase3Button.position(460,850);
+        this.phase3Button.mousePressed(phase3);
+
+        this.phase4Button = createButton('4');
+        this.phase4Button.position(490,850);
+        this.phase4Button.mousePressed(phase4);
+
+        }
+    }
