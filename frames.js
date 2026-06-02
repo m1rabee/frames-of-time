@@ -44,7 +44,7 @@ let display = "animation";
 function preload() {
     // LOAD ANIMATION FRAMES 
     for (let i = 1; i <= totalFrames; i++) {
-        let frame = loadImage(`assets/frame-${String(i).padStart(2, "0")}.jpg`);
+        let frame = loadImage(`assets/test-frames/frame-${String(i).padStart(2, "0")}.jpg`);
     
         frames.push(frame);
         origFrames.push(frame);
