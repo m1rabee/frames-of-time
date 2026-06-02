@@ -44,17 +44,17 @@ let display = "animation";
 function preload() {
     // LOAD ANIMATION FRAMES 
     for (let i = 1; i <= totalFrames; i++) {
-        let frame = loadImage(`assets/test-frames/frame-${String(i).padStart(2, "0")}.jpg`);
-    
-        frames.push(frame);
-        origFrames.push(frame);
+      frames[i - 1] = loadImage(`assets/test-frames/frame-${String(i).padStart(2, "0")}.jpg`);
     }
+        origFrames.push(frame);
 }
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
     textSize(20);
-    
+
+    console.log("frames loaded:", frames.length);
+  
     nextButton = createButton('next'); 
     nextButton.position(700,510);
     nextButton.mousePressed(next);
@@ -165,7 +165,7 @@ function draw() {
 // DISPLAYS FRAME BY FRAME 
 function displayAnimation(){
     // MAP SLIDER POSITION TO FRAME 
-    let currentFrame = floor(map(slider.sliderX, slider.sliderMin, slider.sliderMax, 0, frames.length -1));
+    let currentFrame = constrain(floor(map(slider.sliderX, slider.sliderMin, slider.sliderMax, 0, frames.length -1)), 0, frames.length -1);
     if (
       frames.length > 0 &&
       frames[currentFrame] &&
