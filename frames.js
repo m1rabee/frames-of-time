@@ -166,6 +166,11 @@ function draw() {
 function displayAnimation(){
     // MAP SLIDER POSITION TO FRAME 
     let currentFrame = floor(map(slider.sliderX, slider.sliderMin, slider.sliderMax, 0, frames.length -1));
+    if (
+      frames.length > 0 &&
+      frames[currentFrame] &&
+      frames[currentFrame].width 
+      ){
     image(frames[currentFrame], 150,100,600,400);
 }
 
