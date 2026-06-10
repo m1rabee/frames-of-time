@@ -3,6 +3,8 @@ let frames = []; // array containing frames
 let origFrames = []; // array containing chronological frames
 let slider; 
 let ui;
+let trackUI;
+let thumbUI; 
 
 // STORY 
 let story = [ // array containing progressing text
@@ -47,12 +49,15 @@ let display = "animation";
 function preload() {
   // LOAD ANIMATION FRAMES 
   for (let i = 1; i <= 12; i++) {
-    let path = `assets/frame-${String(i).padStart(2, "0")}.jpg`;
+    let path = `assets/frames/frame${String(i).padStart(2, "0")}.jpg`;
 
     frames[i - 1] = loadImage(
       path,
     );
   }
+
+  trackUI = loadImage("assets/ui/slider-track.png");
+  thumbUI = loadImage("assets/ui/slider-thumb.png")
 }
 
 function setup() {
@@ -79,7 +84,8 @@ function draw() {
     }
   
   // BEHAVIOR CHANGES DEPENDING ON PART OF STORY
-    text(story[index], 100,700);
+    textAlign(CENTER)
+    text(story[index], 925,650);
     
     // PHASE 1 START
     if (index >= 0 && index <=1){
@@ -123,6 +129,10 @@ function draw() {
         slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
         slider.clickableTrack = false;
+    }
+
+    if (index === 10){
+
     }
 
     // PHASE 2 START - GALLERY DISPLAY 
@@ -182,7 +192,7 @@ function draw() {
 function displayAnimation(){
   // MAP FRAME TO SLIDER VALUE
   let currentFrame = floor(map(slider.sliderX, slider.sliderMin, slider.sliderMax, 0, frames.length - 1));
-  image(frames[currentFrame], 150, 100, 600, 400);
+  image(frames[currentFrame], 600, 100, 700, 467);
 }
 
 // DISPLAYS ALL FRAMES IN ONE WINDOW 
@@ -285,13 +295,13 @@ function resetFrame(){
 class Slider {
   constructor(
     value = 0,
-    sliderX = 100,
-    sliderY = 600,
+    sliderX = 700,
+    sliderY = 820,
     isDragging = false,
     weight = 0.05,
-    sliderMin = 100,
-    sliderMax = 800,
-    thumbSize = 20,
+    sliderMin = 700,
+    sliderMax = 1150,
+    thumbSize = 30,
     direction = null,
     snapTo = null,
     clickableTrack = false
@@ -379,18 +389,19 @@ class Slider {
 
     // THUMB
     fill(255);
-    ellipse(this.sliderX, this.sliderY, this.thumbSize * 2);
+    image(thumbUI, this.sliderX - 15, this.sliderY - 25, 50, 50);
   }
 }
 
+// HOLDS ALL BUTTONS
 class UIButtons {
     constructor(){
         this.nextButton = createButton('next'); 
-        this.nextButton.position(770,770);
+        this.nextButton.position(1200,700);
         this.nextButton.mousePressed(next);
         
         this.backButton = createButton('back');
-        this.backButton.position(110,770);
+        this.backButton.position(600,700);
         this.backButton.mousePressed(back);
         
         this.input = createInput('5', 'number');
@@ -398,47 +409,47 @@ class UIButtons {
         this.input.size(45, 20);
         
         this.shuffleButton = createButton('shuffle');
-        this.shuffleButton.position(300,50);
+        this.shuffleButton.position(430,880);
         this.shuffleButton.mousePressed(shuffleFrame);
         
         this.removeButton = createButton('remove');
-        this.removeButton.position(550,50);
+        this.removeButton.position(500,880);
         this.removeButton.mousePressed(removeFrame);
         
         this.playButton = createButton('play');
-        this.playButton.position(470,510);
+        this.playButton.position(920,750);
         this.playButton.mousePressed(play);
         
         this.pauseButton = createButton('pause');
-        this.pauseButton.position(420,510);
+        this.pauseButton.position(965,750);
         this.pauseButton.mousePressed(pause);
         
         this.resetButton = createButton('reset');
-        this.resetButton.position(425,20);
+        this.resetButton.position(870,750);
         this.resetButton.mousePressed(resetFrame);
         
         this.galleryButton = createButton('gallery');
-        this.galleryButton.position(800, 260);
+        this.galleryButton.position(1300, 880);
         this.galleryButton.mousePressed(() => display="gallery");
         
         this.animationButton = createButton('animation');
-        this.animationButton.position(800, 310);
+        this.animationButton.position(1370, 880);
         this.animationButton.mousePressed(() => display="animation"); 
 
         this.phase1Button = createButton('1');
-        this.phase1Button.position(400,850);
+        this.phase1Button.position(900,50);
         this.phase1Button.mousePressed(phase1);
 
         this.phase2Button = createButton('2');
-        this.phase2Button.position(430,850);
+        this.phase2Button.position(930,50);
         this.phase2Button.mousePressed(phase2);
 
         this.phase3Button = createButton('3');
-        this.phase3Button.position(460,850);
+        this.phase3Button.position(960,50);
         this.phase3Button.mousePressed(phase3);
 
         this.phase4Button = createButton('4');
-        this.phase4Button.position(490,850);
+        this.phase4Button.position(990,50);
         this.phase4Button.mousePressed(phase4);
 
         }
