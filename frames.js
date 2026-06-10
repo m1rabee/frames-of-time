@@ -198,16 +198,16 @@ function displayAnimation(){
 // DISPLAYS ALL FRAMES IN ONE WINDOW 
 function displayGallery(){
     let cols = 4;
-    let imgW = 150;
-    let imgH = 100;
+    let imgW = 200;
+    let imgH = 130;
     
     let currentFrame = floor(map(slider.sliderX, slider.sliderMin, slider.sliderMax, 0, frames.length - 1));
     
     for (let i = 0; i < frames.length; i++){
         let col = i % cols;
         let row = floor(i / cols);
-        let x = 100 + col * imgW;
-        let y = 100 + row * imgH;
+        let x = 550 + col * imgW;
+        let y = 110 + row * imgH;
       
         if (i === currentFrame){
             y -= 20;
@@ -405,7 +405,7 @@ class UIButtons {
         this.backButton.mousePressed(back);
         
         this.input = createInput('5', 'number');
-        this.input.position(420, 50);
+        this.input.position(573, 878);
         this.input.size(45, 20);
         
         this.shuffleButton = createButton('shuffle');
@@ -429,11 +429,11 @@ class UIButtons {
         this.resetButton.mousePressed(resetFrame);
         
         this.galleryButton = createButton('gallery');
-        this.galleryButton.position(1300, 880);
+        this.galleryButton.position(1230, 880);
         this.galleryButton.mousePressed(() => display="gallery");
         
         this.animationButton = createButton('animation');
-        this.animationButton.position(1370, 880);
+        this.animationButton.position(1300, 880);
         this.animationButton.mousePressed(() => display="animation"); 
 
         this.phase1Button = createButton('1');
