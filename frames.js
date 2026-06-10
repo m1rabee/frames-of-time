@@ -192,7 +192,7 @@ function draw() {
 function displayAnimation(){
   // MAP FRAME TO SLIDER VALUE
   let currentFrame = floor(map(slider.sliderX, slider.sliderMin, slider.sliderMax, 0, frames.length - 1));
-  image(frames[currentFrame], 600, 100, 700, 467);
+  image(frames[currentFrame], 600, 100, 800, 467);
 }
 
 // DISPLAYS ALL FRAMES IN ONE WINDOW 
