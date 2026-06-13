@@ -1,2 +1,2 @@
 # Frames of Time: Exploring the Illusion of Time through a Frame-by-Frame Animation
-my very very special mms 200 project ! using the mechanics of animation to explore the illusion of time
+Where frames represent the moments in life, where FPS represents the speed of time, where animation represents illusion, and where YOU represent perception... how well do you think you can control time? 
