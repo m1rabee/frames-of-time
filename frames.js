@@ -1,10 +1,12 @@
 // FRAMES AND SLIDER 
 let frames = []; // array containing frames
 let origFrames = []; // array containing chronological frames
-let slider; 
+let loop = 2; // how many times the animation will loop 
+let slider; // controls the frames and animation 
 let ui;
 let trackUI;
 let thumbUI; 
+
 
 // STORY 
 let story = [ // array containing progressing text
@@ -49,7 +51,7 @@ let display = "animation";
 function preload() {
   // LOAD ANIMATION FRAMES 
   for (let i = 1; i <= 12; i++) {
-    let path = `assets/frames/frame${String(i).padStart(2, "0")}.jpg`;
+    let path = `assets/frames/frame${String(i).padStart(2, "0")}.png`;
 
     frames[i - 1] = loadImage(
       path,
@@ -62,7 +64,7 @@ function preload() {
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    textSize(20);
+    textSize(40);
     origFrames = frames.slice(); // DISPLAYS ORIGINAL (CHRONOLOGICAL) FRAMES 
     
     ui = new UIButtons();
@@ -70,7 +72,7 @@ function setup() {
 }
 
 function draw() {
-    background(255);
+    clear();
 
     // PLAY AND PAUSE THE ANIMATION USING BUTTONS AND NOT SLIDER
     if (isPlaying){
@@ -84,7 +86,10 @@ function draw() {
     }
   
   // BEHAVIOR CHANGES DEPENDING ON PART OF STORY
-    textAlign(CENTER)
+    textAlign(CENTER);
+    noStroke();
+    fill('#502031');
+    textFont('Blackadder ITC');
     text(story[index], 925,650);
     
     // PHASE 1 START
@@ -166,6 +171,7 @@ function draw() {
         slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
         slider.clickableTrack = true;
+        display="zoetrope";
     }    
 
     // PHASE 4 START
@@ -183,6 +189,8 @@ function draw() {
         displayAnimation();
     } else if (display === "gallery"){
         displayGallery();
+    } else if (display === "zoetrope"){
+        displayZoetrope();
     }
     
     slider.render();
@@ -191,8 +199,8 @@ function draw() {
 // DISPLAYS FRAME BY FRAME 
 function displayAnimation(){
   // MAP FRAME TO SLIDER VALUE
-  let currentFrame = floor(map(slider.sliderX, slider.sliderMin, slider.sliderMax, 0, frames.length - 1));
-  image(frames[currentFrame], 600, 100, 900, 467);
+  let currentFrame = floor(map(slider.sliderX, slider.sliderMin, slider.sliderMax, 0, frames.length * loop) % frames.length);
+  image(frames[currentFrame], 520, 100, 800, 450);
 }
 
 // DISPLAYS ALL FRAMES IN ONE WINDOW 
@@ -215,6 +223,10 @@ function displayGallery(){
       
         image(frames[i], x, y, imgW, imgH);
     }
+}
+
+function displayZoetrope() {
+
 }
 
 function mousePressed() {
@@ -398,6 +410,11 @@ class UIButtons {
     constructor(){
         this.nextButton = createButton('next'); 
         this.nextButton.position(1200,700);
+        this.nextButton.style("color", "#502031");
+      //  this.nextButton.style("font-size", "25px");
+      //  this.nextButton.style("font-family", "Blackadder ITC");
+      //  this.nextButton.style("border-color", "#502031");
+      //  this.nextButton.style("border-width", "3px")
         this.nextButton.mousePressed(next);
         
         this.backButton = createButton('back');
