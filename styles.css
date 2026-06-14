@@ -6,6 +6,8 @@ body {
   text-align: center;
   font-family: pf-pixelscript, sans-serif;
   font-style: normal;
+  overflow: hidden;
+  position: fixed;
 }
 
 
