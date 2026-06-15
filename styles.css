@@ -1,7 +1,7 @@
 @import url("https://typekit.net");
 
 body {
-  background-image: url(assets/background.jpg);
+  background-image: url(assets/homepage.jpg);
   color: #48293D;
   text-align: center;
   font-family: pf-pixelscript, sans-serif;
@@ -10,46 +10,6 @@ body {
   position: fixed;
 }
 
-
-.frameSlider {
-  width: 25%; /* Width of the outside container */
-}
-
-/* The slider itself */
-.frameSlider {
-  -webkit-appearance: none;  /* Override default CSS styles */
-  appearance: none;
-  width: 25%; /* Full-width */
-  height: 25px; /* Specified height */
-  background: #d3d3d3; /* Grey background */
-  outline: none; /* Remove outline */
-  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-  transition: opacity .2s;
-}
-
-/* Mouse-over effects */
-.slider:hover {
-  opacity: 1; /* Fully shown on mouse-over */
-}
-
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
-  appearance: none;
-  width: 25px; /* Set a specific slider handle width */
-  height: 25px; /* Slider handle height */
-  background: #04AA6D; /* Green background */
-  cursor: pointer; /* Cursor on hover */
-  background: url('frames-of-time/teabag.png');
-  background-size: cover;
-}
-
-.slider::-moz-range-thumb {
-  width: 24px; /* Set a specific slider handle width */
-  height: 25px; /* Slider handle height */
-  background: #04AA6D; /* Green background */
-  cursor: pointer; /* Cursor on hover */
-  background: url('frames-of-time/teabag.png');
-  background-size: cover;
+a.button1 {
+  background-image: url(assets/experience.png);
 }
