@@ -3,6 +3,10 @@ let button2;
 let button3;
 let button4;
 
+function preload(){
+    overlay = loadImage('/assets/overlay.png');
+}
+
 function setup() {
     createCanvas(windowWidth, windowHeight);
 
