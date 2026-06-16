@@ -13,12 +13,12 @@ let story = [ // array containing progressing text
   // PHASE 1 
   "Meet Fred, a lone horse recently separated from his family to follow his dreams.", // 0
   "His goal? To escape this loop he somehow found himself in.", // 1
-  "Help him by adjusting the slider!", // 2
-  "Fred is moving pretty slow, isn’t he? At this rate, will he even escape this loop? Will he still be able to chase his dreams at this pace?", // 3
-  "Now try making him run once again.", // 4
+  "As Perception, help him by adjusting the slider!", // 2
+  "Fred is moving pretty slow, isn’t he? At this rate, will he even escape this loop? Will he still be able to chase his dreams?", // 3
+  "Try making him run once again.", // 4
   "Now he’s moving fast! He might actually have a shot now!", // 5
-  "What if we intentionally sabotage him and make him run in reverse?", // 6
-  "Why don’t we have some fun and make Fred do whatever we want!", // 7
+  "But what if we intentionally sabotage him and make him run in reverse?", // 6
+  "Why don’t we have some fun and make Fred do whatever we want?", // 7
   "Move the slider knob slowly if you want to make him run slow. Move it quickly if you want to make him run fast. Alternatively, you can adjust his rate manually through this box and simply press the play button.", // 8
   "Once you’re done playing with Fred, press next!", // 9
   "Press the play button and watch him run.", // 10
@@ -57,7 +57,8 @@ function preload() {
   }
 
   trackUI = loadImage("assets/ui/slider-track.png");
-  thumbUI = loadImage("assets/ui/slider-thumb.png")
+  thumbUI = loadImage("assets/ui/slider-thumb.png");
+  fpsInput = loadImage("assets/ui/fps-input-blue.png");
 }
 
 function setup() {
@@ -71,6 +72,9 @@ function setup() {
 
 function draw() {
     clear();
+
+    // DECORATIVE FPS INPUT BOX 
+    image(fpsInput, 1680, 100, 200, 65);
 
     // PLAY AND PAUSE THE ANIMATION USING BUTTONS AND NOT SLIDER
     if (isPlaying){
@@ -87,7 +91,7 @@ function draw() {
     noStroke();
     fill('#502031');
     textFont('Blackadder ITC');
-    text(story[index], 390, 600, 1000);
+    text(story[index], 370, 720, 1150);
     
     // PHASE 1 START
     if (index >= 0 && index <=1){
@@ -152,19 +156,37 @@ function draw() {
     }    
 
     // ALL 
-    if (index >= 7 && index <= 9){
+    if (index === 7){
         slider.direction = "null";
         slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
         slider.clickableTrack = false;
     }
+    
+    if (index === 8 && slider.isDragging){
+        slider.direction = "null";
+        slider.snapTo = null;
+        slider.weight = Number(ui.input.value())/100;
+        slider.clickableTrack = false;
+
+        if (slider.sliderX > 900){
+          index = 9
+        }
+    }
+
+    if (index === 9){
+        slider.direction = "null";
+        slider.snapTo = null;
+        slider.weight = Number(ui.input.value())/100;
+        slider.clickableTrack = false;
+    }    
 
     if (index >= 10 && index <= 13){
         slider.direction = "null";
         slider.snapTo = null;
-        slider.weight = 0.05;
+        slider.weight = 0.07;
         slider.clickableTrack = false;
-        ui.input.value("5");
+        ui.input.value("7");
     }    
 
     if (index >= 14 && index <= 17){
@@ -216,7 +238,7 @@ function draw() {
         slider.clickableTrack = true;
     }
     
-    text("FPS: " + floor(frameRate()), 50,50);
+    text("FPS: ", 50,50);
     text("Frames: " + frames.length, 50, 80);
     
     slider.update();
@@ -233,26 +255,28 @@ function draw() {
     slider.render();
     }
 
+
+
 // DISPLAYS FRAME BY FRAME 
 function displayAnimation(){
   // MAP FRAME TO SLIDER VALUE
   let currentFrame = floor(map(slider.sliderX, slider.sliderMin, slider.sliderMax, 0, frames.length * loop) % frames.length);
-  image(frames[currentFrame], 520, 100, 800, 450);
+  image(frames[currentFrame], 500, 150, 800, 450);
 }
 
 // DISPLAYS ALL FRAMES IN ONE WINDOW 
 function displayGallery(){
     let cols = 4;
-    let imgW = 200;
-    let imgH = 130;
+    let imgW = 258;
+    let imgH = 145;
     
     let currentFrame = floor(map(slider.sliderX, slider.sliderMin, slider.sliderMax, 0, frames.length - 1));
     
     for (let i = 0; i < frames.length; i++){
         let col = i % cols;
         let row = floor(i / cols);
-        let x = 550 + col * imgW;
-        let y = 110 + row * imgH;
+        let x = 400 + col * imgW;
+        let y = 150 + row * imgH;
       
         if (i === currentFrame){
             y -= 20;
@@ -344,8 +368,8 @@ function resetFrame(){
 class Slider {
   constructor(
     value = 0,
-    sliderX = 700,
-    sliderY = 820,
+    sliderX = 720,
+    sliderY = 875,
     isDragging = false,
     weight = 0.05,
     sliderMin = 700,
@@ -439,35 +463,16 @@ class Slider {
 // HOLDS ALL BUTTONS
 class UIButtons {
     constructor(){
-        this.nextButton = createImg('assets/ui/next.png', 'next'); 
-        this.nextButton.position(1200,700);
-        this.nextButton.size(30,30); 
-        this.nextButton.style('cursor', 'pointer');
-        this.nextButton.mousePressed(next);
-        this.nextButton.mouseOver(() => {
-          this.nextButton.attribute('src', 'assets/ui/next-hovered.png');
-        });
-        this.nextButton.mouseOut(() => {
-          this.nextButton.attribute('src', 'assets/ui/next.png');
-        });
-        
-        
-        this.backButton = createImg('assets/ui/back.png', 'back');
-        this.backButton.position(600,700);
-        this.backButton.size(30,30); 
-        this.backButton.style('cursor', 'pointer');
-        this.backButton.mousePressed(back);
-        this.backButton.mouseOver(() => {
-          this.backButton.attribute('src', 'assets/ui/back-hovered.png');
-        });
-        this.backButton.mouseOut(() => {
-          this.backButton.attribute('src', 'assets/ui/back.png');
-        });
-        
-        // USER INPUT FOR FPS 
         this.input = createInput('5', 'number');
-        this.input.position(100, 500);
-        this.input.size(45, 20);
+        this.input.position(1805, 122);
+        this.input.size(40, 20);
+
+        this.input.style('background', 'transparent');
+        this.input.style('border', 'none');
+        this.input.style('outline', 'none');
+        this.input.style('color', '#BDCCD4');
+        this.input.style('font-size', '20px');
+
         this.input.attribute('min', '1');
         this.input.attribute('max', '60');
         this.input.input(() => {
@@ -479,24 +484,35 @@ class UIButtons {
           if (value < 1) {
             this.input.value('1');
           }
-        }
-      )
-        
-        this.shuffleButton = createImg('assets/ui/shuffle.png', 'shuffle');
-        this.shuffleButton.position(620,880);
-        this.shuffleButton.size(150, 40);
-        this.shuffleButton.style('cursor', 'pointer');
-        this.shuffleButton.mousePressed(shuffleFrame);
-        this.shuffleButton.mouseOver(() => {
-          this.shuffleButton.attribute('src', 'assets/ui/shuffle-hovered.png');
         });
-        this.shuffleButton.mouseOut(() => {
-          this.shuffleButton.attribute('src', 'assets/ui/shuffle.png');
+
+        this.nextButton = createImg('assets/ui/next.png', 'next'); 
+        this.nextButton.position(1525,780);
+        this.nextButton.size(30,30); 
+        this.nextButton.style('cursor', 'pointer');
+        this.nextButton.mousePressed(next);
+        this.nextButton.mouseOver(() => {
+          this.nextButton.attribute('src', 'assets/ui/next-hovered.png');
         });
-        
+        this.nextButton.mouseOut(() => {
+          this.nextButton.attribute('src', 'assets/ui/next.png');
+        });
+      
+        this.backButton = createImg('assets/ui/back.png', 'back');
+        this.backButton.position(290,780);
+        this.backButton.size(30,30); 
+        this.backButton.style('cursor', 'pointer');
+        this.backButton.mousePressed(back);
+        this.backButton.mouseOver(() => {
+          this.backButton.attribute('src', 'assets/ui/back-hovered.png');
+        });
+        this.backButton.mouseOut(() => {
+          this.backButton.attribute('src', 'assets/ui/back.png');
+        });
+
         this.removeButton = createImg('assets/ui/remove.png','remove');
-        this.removeButton.position(430,880);
-        this.removeButton.size(150, 40);
+        this.removeButton.position(215,980);
+        this.removeButton.size(200, 56);
         this.removeButton.style('cursor', 'pointer');
         this.removeButton.mousePressed(removeFrame);
         this.removeButton.mouseOver(() => {
@@ -506,9 +522,21 @@ class UIButtons {
           this.removeButton.attribute('src', 'assets/ui/remove.png');
         });
         
+        this.shuffleButton = createImg('assets/ui/shuffle.png', 'shuffle');
+        this.shuffleButton.position(475,980);
+        this.shuffleButton.size(200, 56);
+        this.shuffleButton.style('cursor', 'pointer');
+        this.shuffleButton.mousePressed(shuffleFrame);
+        this.shuffleButton.mouseOver(() => {
+          this.shuffleButton.attribute('src', 'assets/ui/shuffle-hovered.png');
+        });
+        this.shuffleButton.mouseOut(() => {
+          this.shuffleButton.attribute('src', 'assets/ui/shuffle.png');
+        });
+        
         this.resetButton = createImg('assets/ui/reset.png', 'reset');
-        this.resetButton.position(850,880);
-        this.resetButton.size(50, 50);
+        this.resetButton.position(810,980);
+        this.resetButton.size(60, 60);
         this.resetButton.style('cursor', 'pointer');
         this.resetButton.mousePressed(resetFrame);
         this.resetButton.mouseOver(() => {
@@ -519,8 +547,8 @@ class UIButtons {
         });
         
         this.playButton = createImg('assets/ui/play.png', 'play');
-        this.playButton.position(930,880);
-        this.playButton.size(50, 50);
+        this.playButton.position(910,980);
+        this.playButton.size(60, 60);
         this.playButton.style('cursor', 'pointer');
         this.playButton.mousePressed(play);
         this.playButton.mouseOver(() => {
@@ -531,8 +559,8 @@ class UIButtons {
         });        
         
         this.pauseButton = createImg('assets/ui/pause.png', 'pause');
-        this.pauseButton.position(1010,880);
-        this.pauseButton.size(50, 50);
+        this.pauseButton.position(1010,980);
+        this.pauseButton.size(60, 60);
         this.pauseButton.style('cursor', 'pointer');
         this.pauseButton.mousePressed(pause);
         this.pauseButton.mouseOver(() => {
@@ -544,8 +572,8 @@ class UIButtons {
         
         
         this.galleryButton = createImg('assets/ui/gallery.png', 'gallery');
-        this.galleryButton.position(1130, 880);
-        this.galleryButton.size(150, 40);
+        this.galleryButton.position(1200, 980);
+        this.galleryButton.size(200, 56);
         this.galleryButton.style('cursor', 'pointer');
         this.galleryButton.mousePressed(() => display="gallery");
         this.galleryButton.mouseOver(() => {
@@ -556,8 +584,8 @@ class UIButtons {
         });
         
         this.animationButton = createImg('assets/ui/animate.png', 'animation');
-        this.animationButton.position(1300, 880);
-        this.animationButton.size(150, 40);
+        this.animationButton.position(1420, 980);
+        this.animationButton.size(200, 56);
         this.animationButton.style('cursor', 'pointer');
         this.animationButton.mousePressed(() => display="animation"); 
         this.animationButton.mouseOver(() => {
@@ -568,19 +596,19 @@ class UIButtons {
         });
 
         this.phase1Button = createButton('1');
-        this.phase1Button.position(900,50);
+        this.phase1Button.position(880,30);
         this.phase1Button.mousePressed(phase1);
 
         this.phase2Button = createButton('2');
-        this.phase2Button.position(930,50);
+        this.phase2Button.position(910,30);
         this.phase2Button.mousePressed(phase2);
 
         this.phase3Button = createButton('3');
-        this.phase3Button.position(960,50);
+        this.phase3Button.position(940,30);
         this.phase3Button.mousePressed(phase3);
 
         this.phase4Button = createButton('4');
-        this.phase4Button.position(990,50);
+        this.phase4Button.position(970,30);
         this.phase4Button.mousePressed(phase4);
 
         }
