@@ -6,44 +6,6 @@ let slider; // controls the frames and animation
 let ui;
 let trackUI;
 let thumbUI; 
-
-
-// STORY 
-let story = [ // array containing progressing text
-  // PHASE 1 
-  "Meet Fred, a lone horse recently separated from his family to follow his dreams.", // 0
-  "His goal? To escape this loop he somehow found himself in.", // 1
-  "As Perception, help him by adjusting the slider!", // 2
-  "Fred is moving pretty slow, isn’t he? At this rate, will he even escape this loop? Will he still be able to chase his dreams?", // 3
-  "Try making him run once again.", // 4
-  "Now he’s moving fast! He might actually have a shot now!", // 5
-  "But what if we intentionally sabotage him and make him run in reverse?", // 6
-  "Why don’t we have some fun and make Fred do whatever we want?", // 7
-  "Move the slider knob slowly if you want to make him run slow. Move it quickly if you want to make him run fast. Alternatively, you can adjust his rate manually through this box and simply press the play button.", // 8
-  "Once you’re done playing with Fred, press next!", // 9
-  "Press the play button and watch him run.", // 10
-  "This is Fred’s “actual” pace—that is, if there exists a consistent universal truth where everyone and everything agrees on this speed.", // 11
-  "That is, if all clocks measured his speed the same way, if Fred can confirm that he is running at this pace, if every observer arrives at the same conclusion.", // 12
-  "That is, if you, as the perception, is not in any way manipulating his speed.", // 13
-  "Of course, mathematically, Fred’s speed cannot be manipulated; it can be measured and be labeled as slow or fast or normal depending on the average speed of a horse. However, perception is a tricky eyeglass tint, making us see Fred’s speed slower or faster depending on our distance from him.", // 14
-  "Distance, in this context, can mean many things.", // 15
-  "Distance, physically, can allude to the space between the observer and the thing being observed.", // 16
-  "Distance, psychologically, can allude to the cognitive biases distorting how we observe. Events become distorted, blurry, exaggerated, even sharpened. It all depends on how deeply we are affected by these cognitive biases.", // 17
-  
-  // PHASE 2 
-  "This is what animation looks like in frames. Very similar to what time looks like in moments. If one looks closely, they would see that there are subtle changes in between frames.", // 18, display="gallery"
-  "When these frames are watched chronologically, one frame after the other, people assume motion and change that isn't there.", // 19
-  "Try skipping frames", // 20, snapTo=null, clickableTrack=true
-  "Try removing some frames", // 21
-  "Try shuffling the frames to see reality go crazy", // 22
-
-  // PHASE 3 
-  "This is the start of Phase 3", // 23
-  "BLABLABLABLA", // 24
-
-  // PHASE 4 
-  "This is the start of Phase 4", // 25
-];
 let index = 0;
 let isPlaying = false;
 let display = "animation";
@@ -56,15 +18,17 @@ function preload() {
     frames[i - 1] = loadImage(path);
   }
 
-  trackUI = loadImage("assets/ui/slider-track.png");
-  thumbUI = loadImage("assets/ui/slider-thumb.png");
-  fpsInput = loadImage("assets/ui/fps-input-blue.png");
+  trackUI = loadImage("assets/ui/slider-track.png"); // SLIDER TRACK 
+  thumbUI = loadImage("assets/ui/slider-thumb.png"); // SLIDER THUMB
+  thumbUIHovered = loadImage("assets/ui/slider-thumb-hovered.png"); // SLIDER THUMB hovered ver
+  fpsInput = loadImage("assets/ui/fps-input-blue.png"); // DECORATIVE FPS INPUT BOX 
+  fpsInputDisabled = loadImage("assets/ui/fps-input-disabled.png"); // DECORATIVE FPS INPUT BOX disabled ver 
 }
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
     textSize(40);
-    origFrames = frames.slice(); // DISPLAYS ORIGINAL (CHRONOLOGICAL) FRAMES 
+    origFrames = frames.slice(); // DISPLAYS ORIGINAL (CHRONOLOGICAL) FRAMES FOR RESET BUTTON 
     
     ui = new UIButtons();
     slider = new Slider();
@@ -72,9 +36,6 @@ function setup() {
 
 function draw() {
     clear();
-
-    // DECORATIVE FPS INPUT BOX 
-    image(fpsInput, 1680, 100, 200, 65);
 
     // PLAY AND PAUSE THE ANIMATION USING BUTTONS AND NOT SLIDER
     if (isPlaying){
@@ -94,17 +55,34 @@ function draw() {
     text(story[index], 370, 720, 1150);
     
     // PHASE 1 START
+    if (index >= 0 && index <=17){
+        ui.removeButton.isDisabled = true;
+        ui.shuffleButton.isDisabled = true;
+        ui.galleryButton.isDisabled = true;
+        ui.animationButton.isDisabled = true;
+    }
+
+    if (index >=0 && index <=7){
+        image(fpsInputDisabled, 1680, 100, 200, 65);
+    }
+
+    if (index >=8 && index <=21) {
+        image(fpsInput, 1680, 100, 200, 65);
+    }
+
     if (index >= 0 && index <=1){
         slider.direction = "forward";
         slider.snapTo = slider.sliderMin;
         slider.weight = 0.03;
         slider.clickableTrack = false;
         ui.input.value("3");
-      //  shuffleButton.removeAttribute('disabled');
-      //  removeButton.removeAttribute('disabled');
     }
     
     // SLOW 
+    if (index === 2 && index === 4 && index === 6){
+        ui.nextButton.isDisabled = true;
+    }
+
     if (index === 2 && slider.isDragging){
         slider.direction = "forward";
         slider.snapTo = slider.sliderMin;
@@ -123,6 +101,7 @@ function draw() {
         slider.weight = 0.01;
         slider.clickableTrack = false;
         ui.input.value("1");
+        ui.nextButton.isDisabled = false;
     }
 
     // FAST
@@ -144,6 +123,7 @@ function draw() {
         slider.weight = 0.05;
         slider.clickableTrack = false;
         ui.input.value("5");
+        ui.nextButton.isDisabled = false;
     }  
 
     // REVERSE
@@ -161,6 +141,7 @@ function draw() {
         slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
         slider.clickableTrack = false;
+        ui.nextButton.isDisabled = false;
     }
     
     if (index === 8 && slider.isDragging){
@@ -181,7 +162,16 @@ function draw() {
         slider.clickableTrack = false;
     }    
 
-    if (index >= 10 && index <= 13){
+    if (index === 10){
+        slider.direction = "null";
+        slider.snapTo = slider.sliderMin;
+        slider.weight = 0.07;
+        slider.clickableTrack = false;
+        ui.input.value("7");
+
+    }
+
+    if (index >= 11 && index <= 13){
         slider.direction = "null";
         slider.snapTo = null;
         slider.weight = 0.07;
@@ -197,6 +187,10 @@ function draw() {
     }
 
     // PHASE 2 START - GALLERY DISPLAY 
+
+    if (index >= 18 && index <=21){
+        ui.removeButton.isDisabled = false;
+    }
     if (index === 18){
         slider.direction = slider.sliderMin;
         slider.snapTo = slider.sliderMin;
@@ -241,6 +235,8 @@ function draw() {
     text("FPS: ", 50,50);
     text("Frames: " + frames.length, 50, 80);
     
+    ui.update();
+
     slider.update();
 
     // TYPES OF FRAMES DISPLAY 
@@ -363,253 +359,3 @@ function resetFrame(){
     frames = [...origFrames];
     slider.sliderX = slider.snapTo;
 }
-
-// CONTROLS ALL SLIDER BEHAVIORS
-class Slider {
-  constructor(
-    value = 0,
-    sliderX = 720,
-    sliderY = 875,
-    isDragging = false,
-    weight = 0.05,
-    sliderMin = 700,
-    sliderMax = 1150,
-    thumbSize = 30,
-    direction = null,
-    snapTo = null,
-    clickableTrack = false
-  ) {
-    this.value = value;
-    this.sliderX = sliderX;
-    this.sliderY = sliderY;
-    this.isDragging = isDragging;
-    this.weight = weight;
-    this.sliderMin = sliderMin;
-    this.sliderMax = sliderMax;
-    this.thumbSize = thumbSize;
-    this.direction = direction;
-    this.snapTo = snapTo ?? null;
-    this.clickableTrack = clickableTrack;
-  }
-
-  mousePressed() {
-    // CHECK IF MOUSE IS ON THUMB
-    let onThumb =
-      dist(mouseX, mouseY, this.sliderX, this.sliderY) <
-      this.thumbSize;
-
-    if (onThumb) {
-      this.isDragging = true;
-    }
-
-    // CHECK IF MOUSE IS ON TRACK
-    let onTrack =
-      abs(mouseY - this.sliderY) < this.thumbSize;
-
-    if (this.clickableTrack && onTrack) {
-      this.sliderX = constrain(
-        mouseX,
-        this.sliderMin,
-        this.sliderMax
-      );
-
-      this.isDragging = true;
-    }
-  }
-
-  mouseReleased() {
-    if (this.isDragging) {
-      this.isDragging = false;
-
-      // SNAP TO POSITION
-      if (this.snapTo !== null) {
-        this.sliderX = this.snapTo ?? slider.Max;
-      }
-    }
-  }
-
-  update() {
-    if (this.isDragging) {
-      let targetX = mouseX;
-
-      // DIRECTION CONTROL
-      if (this.direction === "forward") {
-        targetX = max(this.sliderX, mouseX);
-      } else if (this.direction === "reverse") {
-        targetX = min(this.sliderX, mouseX);
-      }
-
-      // KEEP INSIDE TRACK
-      targetX = constrain(targetX, this.sliderMin, this.sliderMax);
-
-      // RESISTANCE / WEIGHT
-      let speed = targetX - this.sliderX;
-
-      this.sliderX +=
-        speed * this.weight * (deltaTime / 16.67);
-    }
-  }
-
-  render() {
-    // TRACK
-    // line(this.sliderMin, this.sliderY, this.sliderMax, this.sliderY);
-    image(trackUI, this.sliderMin, this.sliderY - 10, this.sliderMax - this.sliderMin, 20);
-
-    // THUMB
-    image(thumbUI, this.sliderX - 15, this.sliderY - 25, 70, 50);
-  }
-}
-
-// HOLDS ALL BUTTONS
-class UIButtons {
-    constructor(){
-        this.input = createInput('5', 'number');
-        this.input.position(1805, 122);
-        this.input.size(40, 20);
-
-        this.input.style('background', 'transparent');
-        this.input.style('border', 'none');
-        this.input.style('outline', 'none');
-        this.input.style('color', '#BDCCD4');
-        this.input.style('font-size', '20px');
-
-        this.input.attribute('min', '1');
-        this.input.attribute('max', '60');
-        this.input.input(() => {
-          let value = Number(this.input.value()); // LIMIT FPS TO 1-60
-
-          if (value > 60) {
-            this.input.value('60');
-          }
-          if (value < 1) {
-            this.input.value('1');
-          }
-        });
-
-        this.nextButton = createImg('assets/ui/next.png', 'next'); 
-        this.nextButton.position(1525,780);
-        this.nextButton.size(30,30); 
-        this.nextButton.style('cursor', 'pointer');
-        this.nextButton.mousePressed(next);
-        this.nextButton.mouseOver(() => {
-          this.nextButton.attribute('src', 'assets/ui/next-hovered.png');
-        });
-        this.nextButton.mouseOut(() => {
-          this.nextButton.attribute('src', 'assets/ui/next.png');
-        });
-      
-        this.backButton = createImg('assets/ui/back.png', 'back');
-        this.backButton.position(290,780);
-        this.backButton.size(30,30); 
-        this.backButton.style('cursor', 'pointer');
-        this.backButton.mousePressed(back);
-        this.backButton.mouseOver(() => {
-          this.backButton.attribute('src', 'assets/ui/back-hovered.png');
-        });
-        this.backButton.mouseOut(() => {
-          this.backButton.attribute('src', 'assets/ui/back.png');
-        });
-
-        this.removeButton = createImg('assets/ui/remove.png','remove');
-        this.removeButton.position(215,980);
-        this.removeButton.size(200, 56);
-        this.removeButton.style('cursor', 'pointer');
-        this.removeButton.mousePressed(removeFrame);
-        this.removeButton.mouseOver(() => {
-          this.removeButton.attribute('src', 'assets/ui/remove-hovered.png');
-        });
-        this.removeButton.mouseOut(() => {
-          this.removeButton.attribute('src', 'assets/ui/remove.png');
-        });
-        
-        this.shuffleButton = createImg('assets/ui/shuffle.png', 'shuffle');
-        this.shuffleButton.position(475,980);
-        this.shuffleButton.size(200, 56);
-        this.shuffleButton.style('cursor', 'pointer');
-        this.shuffleButton.mousePressed(shuffleFrame);
-        this.shuffleButton.mouseOver(() => {
-          this.shuffleButton.attribute('src', 'assets/ui/shuffle-hovered.png');
-        });
-        this.shuffleButton.mouseOut(() => {
-          this.shuffleButton.attribute('src', 'assets/ui/shuffle.png');
-        });
-        
-        this.resetButton = createImg('assets/ui/reset.png', 'reset');
-        this.resetButton.position(810,980);
-        this.resetButton.size(60, 60);
-        this.resetButton.style('cursor', 'pointer');
-        this.resetButton.mousePressed(resetFrame);
-        this.resetButton.mouseOver(() => {
-          this.resetButton.attribute('src', 'assets/ui/reset-hovered.png');
-        });
-        this.resetButton.mouseOut(() => {
-          this.resetButton.attribute('src', 'assets/ui/reset.png');
-        });
-        
-        this.playButton = createImg('assets/ui/play.png', 'play');
-        this.playButton.position(910,980);
-        this.playButton.size(60, 60);
-        this.playButton.style('cursor', 'pointer');
-        this.playButton.mousePressed(play);
-        this.playButton.mouseOver(() => {
-          this.playButton.attribute('src', 'assets/ui/play-hovered.png');
-        });
-        this.playButton.mouseOut(() => {
-          this.playButton.attribute('src', 'assets/ui/play.png');
-        });        
-        
-        this.pauseButton = createImg('assets/ui/pause.png', 'pause');
-        this.pauseButton.position(1010,980);
-        this.pauseButton.size(60, 60);
-        this.pauseButton.style('cursor', 'pointer');
-        this.pauseButton.mousePressed(pause);
-        this.pauseButton.mouseOver(() => {
-          this.pauseButton.attribute('src', 'assets/ui/pause-hovered.png');
-        });
-        this.pauseButton.mouseOut(() => {
-          this.pauseButton.attribute('src', 'assets/ui/pause.png');
-        });        
-        
-        
-        this.galleryButton = createImg('assets/ui/gallery.png', 'gallery');
-        this.galleryButton.position(1200, 980);
-        this.galleryButton.size(200, 56);
-        this.galleryButton.style('cursor', 'pointer');
-        this.galleryButton.mousePressed(() => display="gallery");
-        this.galleryButton.mouseOver(() => {
-          this.galleryButton.attribute('src', 'assets/ui/gallery-hovered.png');
-        });
-        this.galleryButton.mouseOut(() => {
-          this.galleryButton.attribute('src', 'assets/ui/gallery.png');
-        });
-        
-        this.animationButton = createImg('assets/ui/animate.png', 'animation');
-        this.animationButton.position(1420, 980);
-        this.animationButton.size(200, 56);
-        this.animationButton.style('cursor', 'pointer');
-        this.animationButton.mousePressed(() => display="animation"); 
-        this.animationButton.mouseOver(() => {
-          this.animationButton.attribute('src', 'assets/ui/animate-hovered.png');
-        });
-        this.animationButton.mouseOut(() => {
-          this.animationButton.attribute('src', 'assets/ui/animate.png');
-        });
-
-        this.phase1Button = createButton('1');
-        this.phase1Button.position(880,30);
-        this.phase1Button.mousePressed(phase1);
-
-        this.phase2Button = createButton('2');
-        this.phase2Button.position(910,30);
-        this.phase2Button.mousePressed(phase2);
-
-        this.phase3Button = createButton('3');
-        this.phase3Button.position(940,30);
-        this.phase3Button.mousePressed(phase3);
-
-        this.phase4Button = createButton('4');
-        this.phase4Button.position(970,30);
-        this.phase4Button.mousePressed(phase4);
-
-        }
-    }
