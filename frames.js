@@ -39,11 +39,23 @@ function draw() {
 
     // PLAY AND PAUSE THE ANIMATION USING BUTTONS AND NOT SLIDER
     if (isPlaying){
-        slider.sliderX += 50 * slider.weight;
-    
-        if (slider.sliderX >= slider.sliderMax){
-          slider.sliderX = slider.sliderMax;
-          isPlaying = false;
+        let step = 50 * slider.weight;
+
+        if (slider.direction === "reverse"){
+            slider.sliderX -= step;
+            if (slider.sliderX <= slider.sliderMin){
+                slider.sliderX = slider.sliderMax;
+                isPlaying = false;
+            }
+
+        } else {
+            slider.sliderX += step;
+
+
+            if (slider.sliderX >= slider.sliderMax){
+                slider.sliderX = slider.sliderMin;
+                isPlaying = false;
+            }
         }
     }
   
@@ -55,32 +67,29 @@ function draw() {
     text(story[index], 370, 720, 1150);
     
     // PHASE 1 START
-    if (index >= 0 && index <=17){
+    if (index >= 0 && index <=34){
         ui.removeButton.isDisabled = true;
         ui.shuffleButton.isDisabled = true;
         ui.galleryButton.isDisabled = true;
         ui.animationButton.isDisabled = true;
+        display="animation";
     }
 
-    if (index >=0 && index <=7){
+    if (index >=0 && index <=9){
         image(fpsInputDisabled, 1680, 100, 200, 65);
     }
 
-    if (index >=8 && index <=21) {
+    if (index >=10) {
         image(fpsInput, 1680, 100, 200, 65);
     }
 
+    // SLOW
     if (index >= 0 && index <=1){
         slider.direction = "forward";
         slider.snapTo = slider.sliderMin;
         slider.weight = 0.03;
         slider.clickableTrack = false;
         ui.input.value("3");
-    }
-    
-    // SLOW 
-    if (index === 2 && index === 4 && index === 6){
-        ui.nextButton.isDisabled = true;
     }
 
     if (index === 2 && slider.isDragging){
@@ -127,16 +136,29 @@ function draw() {
     }  
 
     // REVERSE
-    if (index === 6){
+    if (index >= 6 && index <=7){
         slider.direction = "reverse";
-        slider.snapTo = slider.sliderMax;
         slider.weight = 0.03;
         slider.clickableTrack = false;
         ui.input.value("3");
+    }     
+    
+    if (index >= 6 && index <=7 && slider.isDragging){
+        slider.snapTo = slider.sliderMax;
+        slider.direction = "reverse";
+        slider.weight = 0.03;
+        slider.clickableTrack = false;
+        if (slider.sliderX <= 900){
+            index = 7;
+        }
     }    
 
-    // ALL 
     if (index === 7){
+        ui.nextButton.isDisabled = false;
+    }
+    
+    // ALL 
+    if (index === 8){
         slider.direction = "null";
         slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
@@ -144,25 +166,14 @@ function draw() {
         ui.nextButton.isDisabled = false;
     }
     
-    if (index === 8 && slider.isDragging){
+    if (index >= 9 && index <= 11 && slider.isDragging){
         slider.direction = "null";
         slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
         slider.clickableTrack = false;
-
-        if (slider.sliderX > 900){
-          index = 9
-        }
     }
 
-    if (index === 9){
-        slider.direction = "null";
-        slider.snapTo = null;
-        slider.weight = Number(ui.input.value())/100;
-        slider.clickableTrack = false;
-    }    
-
-    if (index === 10){
+    if (index === 12){
         slider.direction = "null";
         slider.snapTo = slider.sliderMin;
         slider.weight = 0.07;
@@ -171,7 +182,7 @@ function draw() {
 
     }
 
-    if (index >= 11 && index <= 13){
+    if (index >= 12 && index <= 13){
         slider.direction = "null";
         slider.snapTo = null;
         slider.weight = 0.07;
@@ -179,7 +190,7 @@ function draw() {
         ui.input.value("7");
     }    
 
-    if (index >= 14 && index <= 17){
+    if (index >= 14 && index <= 53){
         slider.direction = "null";
         slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
@@ -187,11 +198,15 @@ function draw() {
     }
 
     // PHASE 2 START - GALLERY DISPLAY 
-
-    if (index >= 18 && index <=21){
-        ui.removeButton.isDisabled = false;
+    if (index >= 54){
+        slider.direction = "null";
+        slider.snapTo = null;
+        slider.weight = Number(ui.input.value())/100;
+        slider.clickableTrack = false;
     }
-    if (index === 18){
+
+    if (index === 63){
+        ui.galleryButton.isDisabled = false;
         slider.direction = slider.sliderMin;
         slider.snapTo = slider.sliderMin;
         slider.weight = Number(ui.input.value())/100;
@@ -199,7 +214,8 @@ function draw() {
         display="gallery";
     }    
 
-    if (index === 19){
+    if (index === 64){
+        ui.animationButton.isDisabled = false;
         slider.direction = slider.sliderMin;
         slider.snapTo = slider.sliderMin;
         slider.weight = Number(ui.input.value())/100;
@@ -208,15 +224,23 @@ function draw() {
     }        
 
     // ALLOW SKIP 
-    if (index >= 20 && index <= 21){
+    if (index === 73){
         slider.direction = "null";
         slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
         slider.clickableTrack = true;
     }    
 
+    if (index === 74){
+        ui.removeButton.isDisabled = false;
+    }
+
+    if (index === 83){
+        ui.shuffleButton.isDisabled = false;
+    }
+
     // PHASE 3 START
-    if (index === 22){
+    if (index === 84){
         slider.direction = "null";
         slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
@@ -225,7 +249,7 @@ function draw() {
     }    
 
     // PHASE 4 START
-    if (index === 24){
+    if (index === 86){
         slider.direction = "null";
         slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
@@ -273,7 +297,7 @@ function displayGallery(){
         let row = floor(i / cols);
         let x = 400 + col * imgW;
         let y = 150 + row * imgH;
-      
+
         if (i === currentFrame){
             y -= 20;
         }
@@ -299,15 +323,15 @@ function phase1(){
 }
 
 function phase2(){
-  index = 18;
+  index = 54;
 }
 
 function phase3(){
-  index = 23;
+  index = 84;
 }
 
 function phase4(){
-  index = 25;
+  index = 86;
 }
 
 // PROGRESSES FORWARD IN THE STORY
@@ -316,6 +340,17 @@ function next(){
 
   if (index > story.length - 1){
     index = 0;
+  }
+
+ // const disableNext = [2, 4, 6];
+ // ui.nextButton.isDisabled = disableNext.includes(index);
+
+  if (index === 6){
+    slider.sliderX = slider.sliderMax;
+  }
+
+  if (index === 7){
+    slider.sliderX = slider.sliderMax;
   }
 }
 
@@ -357,5 +392,8 @@ function pause(){
 // RESETS THE ANIMATION AFTER ANY INTERACTION 
 function resetFrame(){
     frames = [...origFrames];
-    slider.sliderX = slider.snapTo;
+    slider.sliderX = slider.sliderMin;
+    slider.weight = 0.03;
+    ui.input.value("5");
+    isPlaying = false;
 }
