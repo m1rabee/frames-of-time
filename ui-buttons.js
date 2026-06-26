@@ -25,7 +25,8 @@ class UIButtons {
           if (value < 1) {
             this.input.value('1');
           }
-        });
+        }
+        );
 
         this.nextButton = createImg('assets/ui/next.png', 'next'); 
         this.nextButton.position(1550,780);
