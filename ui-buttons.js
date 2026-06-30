@@ -35,6 +35,8 @@ class UIButtons {
         this.nextButton.isDisabled = false;
         this.nextButton.mousePressed(next);
         this.nextButton.mouseOver(() => {
+          hoverSFX.stop();
+          hoverSFX.play();
           this.nextButton.attribute('src', 'assets/ui/next-hovered.png');
         });
         this.nextButton.mouseOut(() => {
@@ -47,6 +49,8 @@ class UIButtons {
         this.backButton.style('cursor', 'pointer');
         this.backButton.mousePressed(back);
         this.backButton.mouseOver(() => {
+          hoverSFX.stop();
+          hoverSFX.play();
           this.backButton.attribute('src', 'assets/ui/back-hovered.png');
         });
         this.backButton.mouseOut(() => {
@@ -61,6 +65,8 @@ class UIButtons {
         this.removeButton.enabledVersion = 'assets/ui/remove.png';
         this.removeButton.mousePressed(removeFrame);
         this.removeButton.mouseOver(() => {
+          hoverSFX.stop();
+          hoverSFX.play();
           this.removeButton.attribute('src', 'assets/ui/remove-hovered.png');
         });
         this.removeButton.mouseOut(() => {
@@ -75,6 +81,8 @@ class UIButtons {
         this.shuffleButton.enabledVersion = 'assets/ui/shuffle.png';
         this.shuffleButton.mousePressed(shuffleFrame);
         this.shuffleButton.mouseOver(() => {
+          hoverSFX.stop();
+          hoverSFX.play();
           this.shuffleButton.attribute('src', 'assets/ui/shuffle-hovered.png');
         });
         this.shuffleButton.mouseOut(() => {
@@ -85,8 +93,13 @@ class UIButtons {
         this.resetButton.position(810,980);
         this.resetButton.size(60, 60);
         this.resetButton.style('cursor', 'pointer');
+        this.resetButton.isDisabled = false;
+        this.resetButton.enabledVersion = 'assets/ui/reset.png';
+        this.resetButton.disabledVersion = 'assets/ui/reset-disabled.png';
         this.resetButton.mousePressed(resetFrame);
         this.resetButton.mouseOver(() => {
+          hoverSFX.stop();
+          hoverSFX.play();
           this.resetButton.attribute('src', 'assets/ui/reset-hovered.png');
         });
         this.resetButton.mouseOut(() => {
@@ -97,8 +110,13 @@ class UIButtons {
         this.playButton.position(915,980);
         this.playButton.size(60, 60);
         this.playButton.style('cursor', 'pointer');
+        this.playButton.isDisabled = false;
+        this.playButton.enabledVersion = 'assets/ui/play.png';
+        this.playButton.disabledVersion = 'assets/ui/play-disabled.png';
         this.playButton.mousePressed(play);
         this.playButton.mouseOver(() => {
+          hoverSFX.stop();
+          hoverSFX.play();
           this.playButton.attribute('src', 'assets/ui/play-hovered.png');
         });
         this.playButton.mouseOut(() => {
@@ -109,14 +127,18 @@ class UIButtons {
         this.pauseButton.position(1015,980);
         this.pauseButton.size(60, 60);
         this.pauseButton.style('cursor', 'pointer');
+        this.pauseButton.isDisabled = false;
+        this.pauseButton.enabledVersion = 'assets/ui/pause.png';
+        this.pauseButton.disabledVersion = 'assets/ui/pause-disabled.png';
         this.pauseButton.mousePressed(pause);
         this.pauseButton.mouseOver(() => {
+          hoverSFX.stop();
+          hoverSFX.play();
           this.pauseButton.attribute('src', 'assets/ui/pause-hovered.png');
         });
         this.pauseButton.mouseOut(() => {
           this.pauseButton.attribute('src', 'assets/ui/pause.png');
         });        
-        
         
         this.galleryButton = createImg('assets/ui/gallery.png', 'gallery');
         this.galleryButton.position(1225, 980);
@@ -126,6 +148,8 @@ class UIButtons {
         this.galleryButton.enabledVersion = 'assets/ui/gallery.png';
         this.galleryButton.mousePressed(() => display="gallery");
         this.galleryButton.mouseOver(() => {
+          hoverSFX.stop();
+          hoverSFX.play();
           this.galleryButton.attribute('src', 'assets/ui/gallery-hovered.png');
         });
         this.galleryButton.mouseOut(() => {
@@ -140,6 +164,8 @@ class UIButtons {
         this.animationButton.enabledVersion = 'assets/ui/animate.png';
         this.animationButton.mousePressed(() => display="animation"); 
         this.animationButton.mouseOver(() => {
+          hoverSFX.stop();
+          hoverSFX.play();
           this.animationButton.attribute('src', 'assets/ui/animate-hovered.png');
         });
         this.animationButton.mouseOut(() => {
@@ -149,18 +175,34 @@ class UIButtons {
         this.phase1Button = createButton('1');
         this.phase1Button.position(880,30);
         this.phase1Button.mousePressed(phase1);
+        this.phase1Button.mouseOver(() => {
+          hoverSFXV2.stop();
+          hoverSFXV2.play();
+        });
 
         this.phase2Button = createButton('2');
         this.phase2Button.position(910,30);
         this.phase2Button.mousePressed(phase2);
+        this.phase2Button.mouseOver(() => {
+          hoverSFXV2.stop();
+          hoverSFXV2.play();
+        });
 
         this.phase3Button = createButton('3');
         this.phase3Button.position(940,30);
         this.phase3Button.mousePressed(phase3);
+        this.phase3Button.mouseOver(() => {
+          hoverSFXV2.stop();
+          hoverSFXV2.play();
+        });
 
         this.phase4Button = createButton('4');
         this.phase4Button.position(970,30);
         this.phase4Button.mousePressed(phase4);
+        this.phase4Button.mouseOver(() => {
+          hoverSFXV2.stop();
+          hoverSFXV2.play();
+        });
     }
     
     update(){
@@ -198,7 +240,29 @@ class UIButtons {
             null,
             this.nextButton.isDisabled,
         );
+
+        setButtonState(
+            this.resetButton,
+            this.resetButton.enabledVersion,
+            this.resetButton.disabledVersion,
+            this.resetButton.isDisabled,
+        );
+
+        setButtonState(
+            this.playButton,
+            this.playButton.enabledVersion,
+            this.playButton.disabledVersion,
+            this.playButton.isDisabled,
+        );
+
+        setButtonState(
+            this.pauseButton,
+            this.pauseButton.enabledVersion,
+            this.pauseButton.disabledVersion,
+            this.pauseButton.isDisabled,
+        );
         }
+
 }
 
 
