@@ -11,7 +11,7 @@ class Slider {
     thumbSize = 30,
     direction = null,
     snapTo = null,
-    clickableTrack = false
+    clickableTrack = false,
   ) {
     this.value = value;
     this.sliderX = sliderX;
@@ -24,18 +24,26 @@ class Slider {
     this.direction = direction;
     this.snapTo = snapTo ?? null;
     this.clickableTrack = clickableTrack;
+    this.isHovering = false;
+    this.isEnabled = false; 
   }
 
   mousePressed() {
     // CHECK IF MOUSE IS ON THUMB
+
+  //  if (!this.isEnabled){
+  //    return;
+  //  }
+
     let onThumb =
       mouseX > this.sliderX - 35 &&
       mouseX < this.sliderX + 35 &&
       mouseY > this.sliderY - 25 &&
       mouseY < this.sliderY + 25;
-
+      
     if (onThumb) {
       this.isDragging = true;
+    }
 
     // CHECK IF MOUSE IS ON TRACK
     let onTrack =
@@ -43,11 +51,10 @@ class Slider {
 
     if (this.clickableTrack && onTrack) {
       this.sliderX = constrain(mouseX, this.sliderMin, this.sliderMax);
-
       this.isDragging = true;
     }
     }
-  }
+
 
   mouseReleased() {
     if (this.isDragging) {
@@ -61,6 +68,11 @@ class Slider {
   }
 
   update() {
+  //  if (!this.isEnabled){
+  //    this.isDragging = false;
+  //    return;
+  //  }
+    
     if (this.isDragging) {
       let targetX = mouseX;
       
@@ -92,6 +104,13 @@ class Slider {
       mouseX < this.sliderX + 35 &&
       mouseY > this.sliderY - 25 &&
       mouseY < this.sliderY + 25;
+
+//    if (onThumb && !this.isHovering){
+//      hoverSFX.stop();
+//      hoverSFX.play();
+//    }
+    
+//    this.isHovering = onThumb;
 
     if (onThumb || this.isDragging) {
       image(thumbUIHovered, this.sliderX - 35, this.sliderY - 25, 70, 50);
