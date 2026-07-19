@@ -6,24 +6,29 @@ let currentPage = "menu";
 function preload() {
   hoverSFX = loadSound("assets/sounds/hover-sfx-v2.mp3"); 
   selectSFX = loadSound("assets/sounds/select-sfx.mp3");
-
+  
+  bgHomepage = loadImage("assets/homepage.jpg");
   bg = loadImage("assets/overlay.png");
 }
 function setup() {
-    createCanvas(1920, 1080);
+    let canvas = createCanvas(1920, 1080);
+        canvas.parent("game-container");
     
+    scaleGame();
     menu = new homepageButtons();
 }
 
 function draw() {
     clear();
 
+    image(bgHomepage, 0, 0, 1920, 1080);
+
     if (currentPage === "menu"){
         textSize(100);
         textAlign(CENTER);
         noStroke();
         fill('#502031');
-        textFont('Blackadder ITC');
+        textFont('IM Fell English');
         text('Frames of Time', 900, 150);
         menu.button1.show();
         menu.button2.show();
@@ -73,9 +78,14 @@ function exit(){
     currentPage = "menu";
 }
 
+function windowResized(){
+    scaleGame();
+}
+
 class homepageButtons {
     constructor (){
         this.button1 = createImg('assets/ui/experience.png', 'experience'); 
+        this.button1.parent("game-container");
         this.button1.position(750,280);
         this.button1.style('cursor','pointer');
         this.button1.size(350, 53);
@@ -89,7 +99,8 @@ class homepageButtons {
             this.button1.attribute('src', 'assets/ui/experience.png');
             });
 
-        this.button2 = createImg('assets/ui/creator.png', 'creator'); 
+        this.button2 = createImg('assets/ui/creator.png', 'creator');
+        this.button2.parent("game-container"); 
         this.button2.position(750,360);
         this.button2.style('cursor','pointer');  
         this.button2.size(350, 53);
@@ -103,7 +114,8 @@ class homepageButtons {
             this.button2.attribute('src', 'assets/ui/creator.png');
             });
 
-        this.button3 = createImg('assets/ui/blueplay.png', 'start'); 
+        this.button3 = createImg('assets/ui/blueplay.png', 'start');
+        this.button3.parent("game-container"); 
         this.button3.position(1675,825);
         this.button3.style('cursor','pointer');
         this.button3.size(120,120);
@@ -118,6 +130,7 @@ class homepageButtons {
             });
 
         this.button4 = createImg('assets/ui/exit.png');
+        this.button4.parent("game-container");
         this.button4.position(1350, 170);
         this.button4.style('cursor', 'pointer');
         this.button4.size(35,35);
