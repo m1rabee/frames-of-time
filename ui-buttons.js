@@ -5,14 +5,15 @@ class UIButtons {
         this.disabledVersion = 'assets/ui/disabled-v2.png';
 
         this.input = createInput('5', 'number');
-        this.input.position(1805, 122);
-        this.input.size(40, 20);
+        this.input.parent("game-container");
+        this.input.position(1492, 136);
+        this.input.size(38, 15);
 
         this.input.style('background', 'transparent');
         this.input.style('border', 'none');
         this.input.style('outline', 'none');
         this.input.style('color', '#BDCCD4');
-        this.input.style('font-size', '20px');
+        this.input.style('font-size', '15px');
 
         this.input.attribute('min', '1');
         this.input.attribute('max', '60');
@@ -29,6 +30,7 @@ class UIButtons {
         );
 
         this.nextButton = createImg('assets/ui/next.png', 'next'); 
+        this.nextButton.parent("game-container");
         this.nextButton.position(1550,780);
         this.nextButton.size(30,30); 
         this.nextButton.style('cursor', 'pointer');
@@ -44,7 +46,8 @@ class UIButtons {
         });
       
         this.backButton = createImg('assets/ui/back.png', 'back');
-        this.backButton.position(300,780);
+        this.backButton.parent("game-container");
+        this.backButton.position(320,780);
         this.backButton.size(30,30); 
         this.backButton.style('cursor', 'pointer');
         this.backButton.mousePressed(back);
@@ -58,6 +61,7 @@ class UIButtons {
         });
 
         this.removeButton = createImg('assets/ui/remove.png','remove');
+        this.removeButton.parent("game-container");
         this.removeButton.position(265,980);
         this.removeButton.size(200, 56);
         this.removeButton.style('cursor', 'pointer');
@@ -74,6 +78,7 @@ class UIButtons {
         });
         
         this.shuffleButton = createImg('assets/ui/shuffle.png', 'shuffle');
+        this.shuffleButton.parent("game-container");
         this.shuffleButton.position(505,980);
         this.shuffleButton.size(200, 56);
         this.shuffleButton.style('cursor', 'pointer');
@@ -90,6 +95,7 @@ class UIButtons {
         });
         
         this.resetButton = createImg('assets/ui/reset.png', 'reset');
+        this.resetButton.parent("game-container");
         this.resetButton.position(810,980);
         this.resetButton.size(60, 60);
         this.resetButton.style('cursor', 'pointer');
@@ -107,6 +113,7 @@ class UIButtons {
         });
         
         this.playButton = createImg('assets/ui/play.png', 'play');
+        this.playButton.parent("game-container");
         this.playButton.position(915,980);
         this.playButton.size(60, 60);
         this.playButton.style('cursor', 'pointer');
@@ -124,6 +131,7 @@ class UIButtons {
         });        
         
         this.pauseButton = createImg('assets/ui/pause.png', 'pause');
+        this.pauseButton.parent("game-container");
         this.pauseButton.position(1015,980);
         this.pauseButton.size(60, 60);
         this.pauseButton.style('cursor', 'pointer');
@@ -141,6 +149,7 @@ class UIButtons {
         });        
         
         this.galleryButton = createImg('assets/ui/gallery.png', 'gallery');
+        this.galleryButton.parent("game-container");
         this.galleryButton.position(1225, 980);
         this.galleryButton.size(200, 56);
         this.galleryButton.style('cursor', 'pointer');
@@ -157,6 +166,7 @@ class UIButtons {
         });
         
         this.animationButton = createImg('assets/ui/animate.png', 'animation');
+        this.animationButton.parent("game-container");
         this.animationButton.position(1450, 980);
         this.animationButton.size(200, 56);
         this.animationButton.style('cursor', 'pointer');
@@ -172,36 +182,64 @@ class UIButtons {
           this.animationButton.attribute('src', 'assets/ui/animate.png');
         });
 
-        this.phase1Button = createButton('1');
-        this.phase1Button.position(880,30);
+        this.phase1Button = createImg('assets/ui/phase.png', '1');
+        this.phase1Button.parent("game-container");
+        this.phase1Button.position(850,20);
+        this.phase1Button.size(33, 40);
+        this.phase1Button.style('cursor', 'pointer');
         this.phase1Button.mousePressed(phase1);
         this.phase1Button.mouseOver(() => {
           hoverSFXV2.stop();
           hoverSFXV2.play();
+          this.phase1Button.attribute('src', 'assets/ui/phase-check.png');
+        });
+        this.phase1Button.mouseOut(() => {
+          this.phase1Button.attribute('src', 'assets/ui/phase.png');
         });
 
-        this.phase2Button = createButton('2');
-        this.phase2Button.position(910,30);
+        this.phase2Button = createImg('assets/ui/phase.png','2');
+        this.phase2Button.parent("game-container");
+        this.phase2Button.position(910,20);
+        this.phase2Button.size(33, 40);
+        this.phase2Button.style('cursor', 'pointer');
         this.phase2Button.mousePressed(phase2);
         this.phase2Button.mouseOver(() => {
           hoverSFXV2.stop();
           hoverSFXV2.play();
+          this.phase2Button.attribute('src', 'assets/ui/phase-check.png');
+        });
+        this.phase2Button.mouseOut(() => {
+          this.phase2Button.attribute('src', 'assets/ui/phase.png');
         });
 
-        this.phase3Button = createButton('3');
-        this.phase3Button.position(940,30);
+        this.phase3Button = createImg('assets/ui/phase.png','3');
+        this.phase3Button.parent("game-container");
+        this.phase3Button.position(970,20);
+        this.phase3Button.size(33, 40);
+        this.phase3Button.style('cursor', 'pointer');
         this.phase3Button.mousePressed(phase3);
         this.phase3Button.mouseOver(() => {
           hoverSFXV2.stop();
           hoverSFXV2.play();
+          this.phase3Button.attribute('src', 'assets/ui/phase-check.png');
+        });
+        this.phase3Button.mouseOut(() => {
+          this.phase3Button.attribute('src', 'assets/ui/phase.png');
         });
 
-        this.phase4Button = createButton('4');
-        this.phase4Button.position(970,30);
+        this.phase4Button = createImg('assets/ui/phase.png', '4');
+        this.phase4Button.parent("game-container");
+        this.phase4Button.position(1030,20);
+        this.phase4Button.size(33, 40);
+        this.phase4Button.style('cursor', 'pointer');
         this.phase4Button.mousePressed(phase4);
         this.phase4Button.mouseOver(() => {
           hoverSFXV2.stop();
           hoverSFXV2.play();
+          this.phase4Button.attribute('src', 'assets/ui/phase-check.png');
+        });
+        this.phase4Button.mouseOut(() => {
+          this.phase4Button.attribute('src', 'assets/ui/phase.png');
         });
     }
     
