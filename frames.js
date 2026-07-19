@@ -5,14 +5,20 @@ let currentFrame = 1;
 let previousFrame = -1;
 let loop = 4; // how many times the animation will loop 
 let slider; // controls the frames and animation 
-let ui;
-let trackUI;
-let thumbUI; 
+let ui; // ui buttons 
 let index = 0;
 let isPlaying = false;
 let display = "animation";
-let PopUp = false; 
- 
+let angle = 0;
+let lastStep = 0;
+let currentPrompt;
+let popup1, popup2, popup3, popup4, popup5, popup6, popup7, popup8, popup9, popup10, popup11;
+let shutter;
+let strobeInterval = 40;
+let flashDuration = 20;
+let realMouseX, realMouseY; 
+let pixelScale = 1;
+
 function preload() {
   // LOAD ANIMATION FRAMES 
   for (let i = 1; i <= 12; i++) {
@@ -22,12 +28,15 @@ function preload() {
   }
 
   // image assets
-  popUpDisplay = loadImage("assets/ui/pop-up-v2.png");
   trackUI = loadImage("assets/ui/slider-track.png"); // SLIDER TRACK 
   thumbUI = loadImage("assets/ui/slider-thumb.png"); // SLIDER THUMB
   thumbUIHovered = loadImage("assets/ui/slider-thumb-hovered.png"); // SLIDER THUMB hovered ver
   fpsInput = loadImage("assets/ui/fps-input-blue.png"); // DECORATIVE FPS INPUT BOX 
   fpsInputDisabled = loadImage("assets/ui/fps-input-disabled.png"); // DECORATIVE FPS INPUT BOX disabled ver 
+  phenakistoscope = loadImage("assets/fredv2.png");
+  phenakistoscopeCover = loadImage("assets/phenakistoscope-cover.png");
+  border = loadImage("assets/border.png");
+  bgImage = loadImage("assets/background01.jpg");
   
   // preload audio assets
   hoverSFX = loadSound("assets/sounds/hover-sfx-v1.mp3"); 
@@ -40,12 +49,41 @@ function preload() {
 }
 
 function setup() {
-    createCanvas(1920, 1080);
+    let canvas = createCanvas(1920, 1080);
+    canvas.parent("game-container");
+
+    function updateRealMouse(evt){
+        const rect = canvas.elt.getBoundingClientRect();
+
+        const sx = rect.width / width;
+        const sy = rect.height / height;
+        
+
+        realMouseX = (evt.clientX - rect.left) / sx;
+        realMouseY = (evt.clientY - rect.top) / sy;
+    }
+    
+    canvas.elt.addEventListener("mousemove", updateRealMouse);
+    canvas.elt.addEventListener("mousedown", updateRealMouse);
+    canvas.elt.addEventListener("mouseup", updateRealMouse);
+
+    scaleGame();
     textSize(40);
     origFrames = frames.slice(); // DISPLAYS ORIGINAL (CHRONOLOGICAL) FRAMES FOR RESET BUTTON 
     
     ui = new UIButtons();
     slider = new Slider();
+    popup1 = new PopUp(prompt1);
+    popup2 = new PopUp(prompt2);
+    popup3 = new PopUp(prompt3);
+    popup4 = new PopUp(prompt4);
+    popup5 = new PopUp(prompt5);
+    popup6 = new PopUp(prompt6);
+    popup7 = new PopUp(prompt7);
+    popup8 = new PopUp(prompt8);
+    popup9 = new PopUp(prompt9);
+    popup10 = new PopUp(prompt10);
+    reflectionPopUp = new PopUp(reflection);
 
 //    playBGM();
 
@@ -53,16 +91,28 @@ function setup() {
 
 function draw() {
     clear();
+
+    image(bgImage, 0, 0, 1920, 1080);
+    
+    // TYPES OF FRAMES DISPLAY 
+    if (display === "animation") {
+        displayAnimation();
+    } else if (display === "gallery"){
+        displayGallery();
+    } else if (display === "phenakistoscope"){
+        displayPhenakistoscope();
+    }
   
-//     ambientSFX.loop()
+    image(border, 212, 68, 1476, 895);
+//    ambientSFX.loop()
 
   // BEHAVIOR CHANGES DEPENDING ON PART OF STORY
     textAlign(CENTER);
     noStroke();
     fill('#502031');
-    textFont('Blackadder ITC');
-    textSize(40);
-    text(story[index], 370, 720, 1150);
+    textFont('IM Fell English');
+    textSize(33);
+    text(story[index], 370, 730, 1150);
 
     if (currentFrame !== previousFrame){
         if (currentFrame === 2){
@@ -85,7 +135,7 @@ function draw() {
     }
 
     if (index >=0 && index <=8){
-        image(fpsInputDisabled, 1680, 100, 200, 65);
+        image(fpsInputDisabled, 1400, 120, 150, 49);
     }
 
     if (index >= 0 && index <=1){
@@ -170,18 +220,9 @@ function draw() {
         slider.clickableTrack = false;
         ui.nextButton.isDisabled = false;
     }
-    
-    if (index === 9){
-        PopUp = false;
-    }
-    
-
-    if (index === 10){
-    //    PopUp = true;
-    }
 
     if (index >= 9) {
-        image(fpsInput, 1680, 100, 200, 65);
+        image(fpsInput, 1400, 120, 150, 49);
     }
 
     if (index >= 9 && index <= 10){
@@ -199,36 +240,41 @@ function draw() {
     }
 
     if (index === 11){
-        PopUp = false;
         slider.direction = "null";
         slider.snapTo = slider.sliderMin;
         slider.weight = 0.05;
         slider.clickableTrack = false;
         ui.input.value("5");
-        if (slider.sliderX >= 900){
-            index = 12;
-        }   
+        ui.nextButton.isDisabled = false;
     }
 
     if (index === 12){
-        slider.direction = "null";
         slider.snapTo = null;
         slider.weight = 0.05;
         slider.clickableTrack = false;
         ui.input.value("5");
+        if (slider.sliderX >= 1000){
+            index = 13;
+        }
     }    
 
     if (index >= 13 && index <= 50){
-        slider.direction = "null";
         slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
         slider.clickableTrack = false;
+        ui.nextButton.isDisabled = false;
+    }
+
+    if (index === 15){
+        slider.weight = 0.05;
+        if (slider.sliderX >= 880){
+            slider.weight = 0.02;
+        }
+
     }
 
     // PHASE 2 START 
     if (index >= 51){
-        slider.direction = "null";
-        slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
         slider.clickableTrack = false;
         ui.nextButton.isEnabled = false;
@@ -238,8 +284,13 @@ function draw() {
         display="animation";
     }
 
+    if (index === 62){
+        ui.galleryButton.isDisabled = true;
+        display="animation";
+    }
+
     // GALLERY DISPLAY
-    if (index === 59 && slider.isDragging){
+    if (index === 63 && slider.isDragging){
         ui.galleryButton.isDisabled = false;
         slider.direction = "null";
         slider.snapTo = slider.sliderMin;
@@ -247,11 +298,11 @@ function draw() {
         slider.clickableTrack = false;
         display="gallery";
         if (slider.sliderX >= 900){
-            index = 60;
+            index = 64;
         }
     }    
 
-    if (index === 60){
+    if (index === 64){
         ui.galleryButton.isDisabled = false;
         slider.direction = "null";
         slider.snapTo = slider.sliderMin;
@@ -260,8 +311,12 @@ function draw() {
         display="gallery";
     }    
 
+    if (index === 65){
+        ui.animationButton.isDisabled = false;
+    }
+
     // ANIMATION DISPLAY 
-    if (index === 61){
+    if (index === 66){
         ui.galleryButton.isDisabled = false;
         ui.animationButton.isDisabled = false;
         slider.direction = "null";
@@ -271,7 +326,7 @@ function draw() {
     }        
 
     // ALLOW SKIP 
-    if (index === 73){
+    if (index === 77){
         slider.direction = "null";
         slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
@@ -281,16 +336,17 @@ function draw() {
         }
     }    
 
-    if (index >= 74){
+    if (index >= 78){
         ui.removeButton.isDisabled = false;
         slider.clickableTrack = true;    
     }
 
-    if (index >= 76){
+    if (index >= 80){
         ui.resetButton.isDisabled = false;
     }
 
-    if (index >= 81){
+    if (index >= 86){
+        ui.nextButton.isDisabled = false;
         ui.removeButton.isDisabled = false;
         ui.shuffleButton.isDisabled = false;
         ui.galleryButton.isDisabled = false;
@@ -302,15 +358,32 @@ function draw() {
     }
 
     // PHASE 3 START
-    if (index === 102){
+    if (index === 101){
         slider.direction = "null";
         slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
         slider.clickableTrack = true;
+    }
+
+    // PHENAKISTOSCOPE DISPLAY 
+    if (index === 116){
+        slider.direction = "null";
+        slider.snapTo = null;
+        slider.weight = Number(ui.input.value())/100;
+        slider.clickableTrack = true;
+        display="phenakistoscope";
     }    
 
+    if (index >= 116 && index <= 123){
+        strobeEnabled = false;
+    }
+
+    if (index >= 124 && slider.isDragging){
+        strobeEnabled = true;
+    }
+
     // PHASE 4 START
-    if (index === 103){
+    if (index === 145){
         slider.direction = "null";
         slider.snapTo = null;
         slider.weight = Number(ui.input.value())/100;
@@ -318,8 +391,8 @@ function draw() {
     }
 
     textSize(26);
-    text("FPS: ", 380,170);
-    text("# of Frames: " + frames.length, 420, 130);
+    text("FPS: ", 380,150);
+    text("# of Frames: " + frames.length, 420, 190);
     
     ui.update();
 
@@ -347,23 +420,12 @@ function draw() {
         }
     }
 
-    // TYPES OF FRAMES DISPLAY 
-    if (display === "animation") {
-        displayAnimation();
-    } else if (display === "gallery"){
-        displayGallery();
-    } else if (display === "zoetrope"){
-        displayZoetrope();
-    }
-    
-    if (PopUp) {
-        displayPopUp();
-    //    darkenBackground();
-    }
-
-
     slider.render();
     }
+
+function windowResized(){
+    scaleGame();
+}
 
 // DISPLAYS FRAME BY FRAME 
 function displayAnimation(){
@@ -394,38 +456,29 @@ function displayGallery(){
     }
 }
 
-function displayZoetrope() {
+function displayPhenakistoscope() {
+    let angularVelocity = map(slider.sliderX, slider.sliderMin, slider.sliderMax, -0.5, 0.5);
 
-}
+    angle -= angularVelocity;
 
-function displayPopUp(){
-//    push();
-//    rectMode(CORNER);
-//    noStroke();
-//    fill(0,180);
-//    rect(0,0, width, height);
+    if (strobeEnabled){
+        let flash = millis() % strobeInterval < flashDuration;
 
-//    pop();
+        if(flash){
+            tint(255, 100);
+        } else {
+            tint(255, 255);
+        }
+    }
 
-    image(popUpDisplay, 600, 200, 715, 388); // pop up display
+    push();
+    translate(960,370);
+    rotate(-angle + 0.5);
+    imageMode(CENTER);
+    image(phenakistoscope,0,0,460,460);
+    pop();
 
-    fill(220);
-    textSize(35);
-    textStyle(NORMAL);
-    textAlign(screenLeft, TOP);
-    text("Are you having fun? Controlling how fast Fred gallops and which direction he goes?", 950, 290, 500);
-
-    textSize(27);
-    // textFont("Roboto");
-    textAlign(LEFT);
-    text("> Yes! I get to see different sides of Fred.", 800, 420, 500);
-    text("> No, I feel guilty controlling him.", 800, 470, 500);
-    
-}
-
-function closePopUp(){
-    PopUp = false; 
-    restoreBackground;
+    noTint();
 }
 
 function mousePressed() {
@@ -443,19 +496,19 @@ function phase1(){
 }
 
 function phase2(){
-  index = 51;
+  index = 55;
   sparkleSFX.pause();
   sparkleSFX.play();  
 }
 
 function phase3(){
-  index = 102;
+  index = 104;  
   sparkleSFX.pause();
   sparkleSFX.play();  
 }
 
 function phase4(){
-  index = 103;
+  index = 145;
   sparkleSFX.pause();
   sparkleSFX.play();  
 }
@@ -468,11 +521,81 @@ function next(){
     index = 0;
   }
 
-  if (index === 62){
+  if (index === 55){
+    sparkleSFX.pause();
+    sparkleSFX.play();
+  }
+
+  if (index === 104){
+    sparkleSFX.pause();
+    sparkleSFX.play();
+  }
+
+  if (index === 63){
     display="gallery";
   }
 
-  const disableNext = [2, 4, 6, 73];
+  if (index === 66){
+    display="animation";
+  }
+
+  if (index === 10){
+    popup1.show();
+  }
+
+  if (index >= 13 && index <= 15){
+    isPlaying = true;
+  }
+  
+  if (index === 23){
+    popup2.show();
+  }
+
+  if (index === 26){
+    popup3.show();
+  }
+
+  if (index === 41){
+    popup4.show();
+  }
+
+  if (index === 85){
+    popup5.show();
+  }
+
+  if (index === 96){
+    popup6.show();
+  }
+
+  if (index === 119){
+    popup7.show();
+  }
+
+  if (index === 125){
+    popup8.show();
+  }
+
+  if (index === 144){
+    popup9.show();
+  }
+
+  if (index === 145){
+    display="animation";
+  }
+
+  if (index === 156){
+    popup10.show();
+  }
+
+  if (index === 158){
+//    reflectionPopUp.show();
+  }
+
+  if (index >= 116 && index <= 118){
+    slider.sliderX = 950;
+  }
+
+  const disableNext = [2, 4, 6, 10, 12, 23, 26, 41, 85, 96, 119, 125, 144, 156];
   ui.nextButton.isDisabled = disableNext.includes(index);
 
   if (index === 6 || index === 7){
@@ -491,6 +614,96 @@ function back(){
     if(index < 0){
         index = 0;
     }
+
+    if (index === 55){
+        sparkleSFX.pause();
+        sparkleSFX.play();
+    }
+
+    if (index === 104){
+        sparkleSFX.pause();
+        sparkleSFX.play();
+    }
+
+    if (index === 63){
+        display="gallery";
+    }
+
+    if (index === 66){
+        display="animation";
+    }
+
+
+    if (index === 10){
+        popup1.show();
+    }
+
+    if (index >= 13 && index <= 15){
+        isPlaying = true;
+    }
+    
+    if (index === 23){
+        popup2.show();
+    }
+
+    if (index === 26){
+        popup3.show();
+    }
+
+    if (index === 41){
+        popup4.show();
+    }
+
+    if (index === 85){
+        popup5.show();
+    }
+
+    if (index === 96){
+        popup6.show();
+    }
+
+    if (index === 119){
+        popup7.show();
+    }
+
+    if (index === 125){
+        popup8.show();
+    }
+
+    if (index === 144){
+        popup9.show();
+    }
+
+    if (index === 156){
+        popup10.show();
+    }
+
+    if (index >= 116 && index <= 118){
+        slider.sliderX = 950;
+    }
+
+    if (index === 6 || index === 7){
+        slider.sliderX = slider.sliderMax;
+    }
+
+    if (index === 11 || index === 9 || index === 8){
+        slider.sliderX = slider.sliderMin;
+    }
+}
+
+function exitPopUp(){
+    index++;
+    popup1.hide();
+    popup2.hide();
+    popup3.hide();
+    popup4.hide();
+    popup5.hide();
+    popup6.hide();
+    popup7.hide();
+    popup8.hide();
+    popup9.hide();
+    popup10.hide();
+    reflectionPopUp.hide();
     }
 
 // SHUFFLES THE FRAMES DIFFERENTLY PER BUTTON PRESS 
@@ -528,43 +741,9 @@ function resetFrame(){
     isPlaying = false;
 }
 
-function darkenBackground(){
-    ui.nextButton.style('opacity', '0.2');
-    ui.backButton.style('opacity', '0.2');
-    ui.removeButton.style('opacity', '0.5');
-    ui.shuffleButton.style('opacity', '0.5');
-    ui.galleryButton.style('opacity', '0.5');
-    ui.animationButton.style('opacity', '0.5');
-    ui.resetButton.style('opacity', '0.4');
-    ui.playButton.style('opacity', '0.4');
-    ui.pauseButton.style('opacity', '0.4');
-    ui.input.style('opacity', '0.15');
-    ui.phase1Button.style('opacity', '0.15');
-    ui.phase2Button.style('opacity', '0.15');
-    ui.phase3Button.style('opacity', '0.15');
-    ui.phase4Button.style('opacity', '0.15');
-}
-
-function resetBackground(){
-    ui.nextButton.style('opacity', '1');
-    ui.backButton.style('opacity', '1');
-    ui.removeButton.style('opacity', '1');
-    ui.shuffleButton.style('opacity', '1');
-    ui.galleryButton.style('opacity', '1');
-    ui.animationButton.style('opacity', '1');
-    ui.resetButton.style('opacity', '1');
-    ui.playButton.style('opacity', '1');
-    ui.pauseButton.style('opacity', '1');
-    ui.input.style('opacity', '1');
-    ui.phase1Button.style('opacity', '1');
-    ui.phase2Button.style('opacity', '1');
-    ui.phase3Button.style('opacity', '1');
-    ui.phase4Button.style('opacity', '1');
-}
-
 // function playBGM(){
 //    if (!ambientSFX.isPlaying()){
 //        ambientSFX.loop();
 //        ambientSFX.setVolume(0.05);
-//    }
-//}
+//   }
+// }
