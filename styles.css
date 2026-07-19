@@ -1,13 +1,43 @@
-body {
-  background-image: url(assets/homepage.jpg);
-  color: #48293D;
-  text-align: center;
-  font-family: pf-pixelscript, sans-serif;
-  font-style: normal;
+body{
+  margin: 0;
   overflow: hidden;
-  position: fixed;
+  background: #361E29;
+}
+
+
+#game-container{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: center center;
 }
 
 a.button1 {
   background-image: url(assets/experience.png);
+}
+
+.im-fell-english-regular-italic {
+  font-family: "IM Fell English", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.jim-nightshade-regular {
+  font-family: "Jim Nightshade", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.dotgothic16-regular {
+  font-family: "DotGothic16", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.almendra-regular-italic {
+  font-family: "Almendra", serif;
+  font-weight: 400;
+  font-style: italic;
 }
